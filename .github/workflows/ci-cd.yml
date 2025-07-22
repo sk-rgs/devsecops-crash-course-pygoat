@@ -14,17 +14,22 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v2
       with: 
-        python-version: 3.8
+        python-version: '3.8'
 
     - name: Install Bandit
       run: pip install bandit
 
     - name: Run Bandit Scan
-      run: bandit -ll -ii -r . -f json -o bandit-report.json
+      run: |
+        # bandit -ll -ii -r . -f json -o bandit-report.json
+        # Create the report directory first
+        mkdir -p reports
+        # Run bandit with explicit path to scan
+        bandit -ll -ii -r ./ -f json -o reports/bandit-report.json
       
     - name: Upload Artifact
       uses: actions/upload-artifact@v3
       if: always()
       with:
         name: bandit-findings
-        path: bandit-report.json
+        path: reports/bandit-report.json
